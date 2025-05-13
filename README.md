@@ -150,16 +150,4 @@ npm run dev
 El backend estará disponible en: http://localhost:5000
 El frontend estará disponible en: http://localhost:5173
 
-## Contribución
-Para contribuir al proyecto, por favor:
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
 
-## Licencia
-Este proyecto está bajo la Licencia [TIPO_DE_LICENCIA] - ver el archivo LICENSE.md para más detalles.
-
-## Contacto
-[INFORMACIÓN_DE_CONTACTO] 
