@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salvapantallas Ambiental</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="login-container" class="login-container">
+        <form id="login-form">
+            <h2>Iniciar sesión</h2>
+            <input type="text" id="documento" placeholder="Documento de identidad" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+            <div class="login-links">
+                <a href="#" id="registro-link">Registro</a> /
+                <a href="#" id="olvide-link">Olvidé contraseña</a>
+            </div>
+            <div id="login-error" class="login-error"></div>
+        </form>
+    </div>
+
+    <!-- Pantalla principal estudiante -->
+    <div class="main-student" id="main-student" style="display:none;">
+        <div class="top-bar">
+            <span class="menu-icon" id="menu-icon">&#9776;</span>
+            <span class="main-title">Datos-News-Mensaje al estudiante</span>
+            <span class="student-name" id="student-name"></span>
+            <span class="bonus-counter" id="bonus-counter">0.0</span>
+            <span class="user-icon"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="user" width="28"></span>
+        </div>
+        <div class="main-content">
+            <div class="student-message" id="student-message">
+                ¡Bienvenido! Selecciona el residuo que vas a depositar.
+            </div>
+            <div class="residues-row">
+                <div class="residue-card paper" data-type="PAPER">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="PAPER">
+                    <span>PAPER</span>
+                </div>
+                <div class="residue-card plastic" data-type="PLASTIC">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046858.png" alt="PLASTIC">
+                    <span>PLASTIC</span>
+                </div>
+                <div class="residue-card organic" data-type="ORGANIC">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046861.png" alt="ORGANIC">
+                    <span>ORGANIC</span>
+                </div>
+                <div class="residue-card glass" data-type="GLASS">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046859.png" alt="GLASS">
+                    <span>GLASS</span>
+                </div>
+                <div class="residue-card metal" data-type="METAL">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046860.png" alt="METAL">
+                    <span>METAL</span>
+                </div>
+            </div>
+            <!-- Botón de cerrar sesión -->
+            <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+        </div>
+        <!-- Menú lateral -->
+        <div class="side-menu" id="side-menu">
+            <div class="side-menu-header">
+                <span class="side-menu-title">Materias</span>
+                <button class="close-menu-btn" id="close-menu-btn">&larr; Volver</button>
+            </div>
+            <ul id="materias-list">
+                <!-- Materias se llenan por JS -->
+            </ul>
+        </div>
+        <!-- Overlay para animaciones y mensajes -->
+        <div class="overlay" id="overlay" style="display:none;">
+            <div class="overlay-content" id="overlay-content">
+                <!-- Aquí van los mensajes y animaciones -->
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
