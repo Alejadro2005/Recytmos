@@ -149,5 +149,3 @@ npm run dev
 
 El backend estará disponible en: http://localhost:5000
 El frontend estará disponible en: http://localhost:5173
-
-
