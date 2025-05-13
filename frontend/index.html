@@ -76,6 +76,142 @@
             </div>
         </div>
     </div>
+
+    <!-- Pantalla principal admin -->
+    <div class="main-admin" id="main-admin" style="display:none;">
+        <div class="top-bar">
+            <span class="main-title">Panel de Administración</span>
+            <span class="admin-name" id="admin-name"></span>
+            <span class="user-icon"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="admin" width="28"></span>
+        </div>
+        <div class="main-content-admin">
+            <div class="admin-btn-row">
+                <button class="admin-btn" id="btn-asignar-materias">Asignación de materias <span class="badge">5</span></button>
+                <button class="admin-btn" id="btn-informes">Generar informes <span class="badge">3</span></button>
+                <button class="admin-btn" id="btn-info-ambiental">Información ambiental <span class="badge">2</span></button>
+                <button class="admin-btn" id="btn-logros">Logros de estudiantes <span class="badge">7</span></button>
+                <button class="admin-btn" id="btn-noticias">Noticias y datos curiosos <span class="badge">1</span></button>
+                <button class="admin-btn" id="btn-top">Top estudiantes recicladores <span class="badge">10</span></button>
+                <button class="admin-btn" id="btn-reportes">Administración de reportes <span class="badge">2</span></button>
+            </div>
+            <button class="logout-btn" id="logout-btn-admin">Cerrar sesión</button>
+        </div>
+    </div>
+
+    <!-- Modal gestión de materias -->
+    <div id="modal-materias" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Gestión de Materias</h3>
+            <ul id="lista-materias-admin"></ul>
+            <input type="text" id="nueva-materia" placeholder="Nueva materia">
+            <button id="agregar-materia">Agregar materia</button>
+            <button id="cerrar-modal-materias">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal informe bonificaciones -->
+    <div id="modal-bonificaciones" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Informe de Bonificaciones</h3>
+            <table id="tabla-bonificaciones">
+                <thead>
+                    <tr><th>Estudiante</th><th>Materia</th><th>Bonificación</th><th>Fecha</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button id="descargar-informe">Descargar CSV</button>
+            <button id="cerrar-modal-bonificaciones">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal información ambiental -->
+    <div id="modal-info-ambiental" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Información ambiental</h3>
+            <canvas id="grafico-residuos" width="320" height="180" style="margin-bottom:18px;"></canvas>
+            <div style="margin-bottom:12px;"><b>Tip ambiental:</b> ¡Recicla papel y ahorra árboles!</div>
+            <table style="margin-bottom:12px;">
+                <thead><tr><th>Tipo</th><th>Reciclado (kg)</th></tr></thead>
+                <tbody>
+                    <tr><td>Papel</td><td>120</td></tr>
+                    <tr><td>Plástico</td><td>80</td></tr>
+                    <tr><td>Vidrio</td><td>60</td></tr>
+                    <tr><td>Orgánico</td><td>150</td></tr>
+                </tbody>
+            </table>
+            <button id="volver-info-ambiental">Volver</button>
+        </div>
+    </div>
+
+    <!-- Modal logros de estudiantes -->
+    <div id="modal-logros" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Logros de estudiantes</h3>
+            <table style="margin-bottom:12px;">
+                <thead><tr><th>Estudiante</th><th>Logro</th><th>Medalla</th></tr></thead>
+                <tbody>
+                    <tr><td>Ana</td><td>100 kg reciclados</td><td>🥇</td></tr>
+                    <tr><td>Luis</td><td>50 kg reciclados</td><td>🥈</td></tr>
+                    <tr><td>María</td><td>30 kg reciclados</td><td>🥉</td></tr>
+                </tbody>
+            </table>
+            <button id="volver-logros">Volver</button>
+        </div>
+    </div>
+
+    <!-- Modal noticias y datos curiosos -->
+    <div id="modal-noticias" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Noticias y datos curiosos</h3>
+            <div style="margin-bottom:10px;"><b>Noticias recientes:</b></div>
+            <ul style="text-align:left; margin-bottom:12px;">
+                <li>2025-06-01: Nueva campaña de reciclaje en colegios</li>
+                <li>2025-05-28: Se superó la meta de residuos orgánicos</li>
+            </ul>
+            <div style="margin-bottom:10px;"><b>Datos curiosos:</b></div>
+            <ul style="text-align:left;">
+                <li>Reciclar una lata ahorra suficiente energía para ver TV 3 horas.</li>
+                <li>El vidrio puede reciclarse infinitas veces.</li>
+            </ul>
+            <button id="volver-noticias">Volver</button>
+        </div>
+    </div>
+
+    <!-- Modal top estudiantes recicladores -->
+    <div id="modal-top" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Top estudiantes recicladores</h3>
+            <canvas id="grafico-top" width="320" height="180" style="margin-bottom:18px;"></canvas>
+            <table style="margin-bottom:12px;">
+                <thead><tr><th>Posición</th><th>Estudiante</th><th>Kg reciclados</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>Ana</td><td>100</td></tr>
+                    <tr><td>2</td><td>Luis</td><td>80</td></tr>
+                    <tr><td>3</td><td>María</td><td>60</td></tr>
+                    <tr><td>4</td><td>Pedro</td><td>40</td></tr>
+                    <tr><td>5</td><td>Lucía</td><td>30</td></tr>
+                </tbody>
+            </table>
+            <button id="volver-top">Volver</button>
+        </div>
+    </div>
+
+    <!-- Modal administración de reportes -->
+    <div id="modal-reportes" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Administración de reportes</h3>
+            <table style="margin-bottom:12px;">
+                <thead><tr><th>Tipo</th><th>Fecha</th><th>Responsable</th></tr></thead>
+                <tbody>
+                    <tr><td>Semanal</td><td>2025-06-01</td><td>Admin</td></tr>
+                    <tr><td>Mensual</td><td>2025-05-31</td><td>Admin</td></tr>
+                </tbody>
+            </table>
+            <button id="descargar-reporte-ejemplo">Descargar reporte</button>
+            <button id="volver-reportes">Volver</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html> 
