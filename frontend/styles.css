@@ -1,20 +1,45 @@
 body {
     background: #222;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
 }
 
 .slide-container {
-    background: #98fb98;
-    width: 90vw;
-    height: 90vh;
-    margin: 2vh auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #111;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#slide-content {
+    margin: 20px;
     padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#slide-ingresar {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#slide-ingresar:hover {
+    background-color: #45a049;
 }
 
 .slide-header {
@@ -171,6 +196,7 @@ body {
     font-size: 1.3em;
     position: relative;
     background: transparent;
+    gap: 10px;
 }
 .menu-icon {
     font-size: 2.3em;
@@ -189,15 +215,20 @@ body {
     letter-spacing: 0.5px;
 }
 .student-name {
-    font-size: 1.1em;
+    display: inline-block;
+    margin-left: 18px;
+    font-size: 1em;
+    color: #222;
     font-weight: 600;
-    color: #388e3c;
-    margin-right: 18px;
-    margin-left: 10px;
+    vertical-align: middle;
     background: #eaffea;
-    padding: 6px 16px;
+    padding: 6px 12px;
     border-radius: 8px;
     box-shadow: 0 1px 4px #b3e6fc;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .bonus-counter {
     font-size: 1.2em;
@@ -238,26 +269,29 @@ body {
 }
 .residues-row {
     display: flex;
-    gap: 32px;
+    gap: 36px;
     justify-content: center;
     align-items: center;
+    margin-top: 18px;
 }
 .residue-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 140px;
-    height: 140px;
-    border-radius: 20px;
+    width: 190px;
+    height: 180px;
+    border-radius: 22px;
     background: #e0e0e0;
     box-shadow: 0 4px 16px #bbb;
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s, filter 0.2s;
     font-weight: bold;
-    font-size: 1.15em;
+    font-size: 1em;
     filter: none;
     border: 2px solid transparent;
+    padding: 12px 6px 8px 6px;
+    box-sizing: border-box;
 }
 .residue-card img {
     width: 64px;
@@ -265,16 +299,25 @@ body {
     margin-bottom: 12px;
 }
 .residue-card span {
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: bold;
     letter-spacing: 1px;
     margin-top: 4px;
 }
-.residue-card.paper { background: #c7e6ff; }
-.residue-card.plastic { background: #ffe066; }
-.residue-card.organic { background: #ffe7a0; }
-.residue-card.glass { background: #c7ffd6; }
-.residue-card.metal { background: #ffb3b3; }
+.residue-card.reciclables {
+    background: #fff;
+    color: #222;
+}
+.residue-card.organicos {
+    background: #6fdc6f;
+    color: #222;
+}
+.residue-card.noaprovechables {
+    background: #000 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 16px #222 !important;
+    border: 2px solid #000 !important;
+}
 .residue-card:active, .residue-card.selected {
     transform: scale(1.10);
     box-shadow: 0 8px 24px #888;
@@ -284,6 +327,30 @@ body {
     opacity: 0.4;
     pointer-events: none;
     filter: grayscale(1);
+}
+.residue-title {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+    text-align: center;
+    word-break: break-word;
+    width: 100%;
+}
+.residue-desc {
+    font-size: 0.95em;
+    font-weight: normal;
+    margin-top: 2px;
+    color: #333;
+    text-align: center;
+    line-height: 1.2;
+    display: block;
+    max-width: 110px;
+    word-break: break-word;
+}
+.residue-card.noaprovechables .residue-desc {
+    color: #fff;
 }
 
 /* Menú lateral */
@@ -671,4 +738,214 @@ body {
     padding: 48px 48px 38px 48px;
     max-width: 600px;
   }
+}
+
+.bubble-icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    margin-top: 6px;
+}
+.bubble-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px #bbb;
+    padding: 4px;
+    object-fit: contain;
+}
+
+/* Modales de registro y olvide contraseña */
+#modal-registro .modal-content, #modal-olvide .modal-content {
+    background: #98fb98;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px #111;
+    padding: 38px 32px 28px 32px;
+    min-width: 320px;
+    max-width: 95vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#modal-registro input, #modal-olvide input {
+    width: 90%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: none;
+    border-radius: 6px;
+    background: #e0e0e0;
+    font-size: 1em;
+}
+#modal-registro button, #modal-olvide button {
+    width: 95%;
+    padding: 12px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+#modal-registro button:hover, #modal-olvide button:hover {
+    background: #388e3c;
+}
+#modal-registro h3, #modal-olvide h3 {
+    color: #222;
+    margin-bottom: 24px;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+#modal-registro .login-error, #modal-olvide .login-error {
+    color: #c00;
+    font-size: 0.95em;
+    margin-top: 5px;
+    min-height: 20px;
+    text-align: center;
+}
+#modal-olvide #olvide-nueva-pass {
+    color: #222;
+    font-size: 1.1em;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* --- NUEVO PANEL ADMIN --- */
+.top-bar-admin {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #4caf50;
+    color: #fff;
+    padding: 24px 40px 18px 40px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 1.3em;
+    box-shadow: 0 2px 8px #b3e6fc;
+}
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.admin-panel-card {
+    background: #f8fff8;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px #b3e6fc;
+    margin: 32px auto 0 auto;
+    padding: 32px 24px;
+    max-width: 900px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: space-between;
+}
+.admin-section {
+    min-width: 220px;
+    flex: 1 1 220px;
+    margin: 0 12px;
+}
+.admin-section h4 {
+    margin-bottom: 18px;
+    color: #388e3c;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-bottom: 1px solid #b3e6fc;
+    padding-bottom: 6px;
+}
+.admin-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 14px 0;
+    font-size: 1.08em;
+    background: #eaffea;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px #b3e6fc;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
+    text-align: left;
+    padding-left: 18px;
+}
+.admin-btn:hover {
+    background: #b2e6b2;
+    color: #388e3c;
+    transform: scale(1.04);
+}
+.logout-btn {
+    position: static;
+    margin: 32px auto 0 auto;
+    display: block;
+}
+
+.student-doc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #222;
+    background: #eaffea;
+    padding: 7px 20px 7px 14px;
+    border-radius: 12px;
+    margin-right: 18px;
+    font-size: 1.13em;
+    box-shadow: 0 1px 4px #b3e6fc;
+    border: 1.5px solid #b3e6fc;
+    max-width: 320px;
+    min-width: 120px;
+    overflow: visible;
+    letter-spacing: 0.5px;
+}
+.student-doc .doc-icon {
+    font-size: 1.25em;
+    margin-right: 4px;
+    color: #388e3c;
+    vertical-align: middle;
+}
+.student-achievement {
+    font-weight: 600;
+    color: #fff;
+    background: #4caf50;
+    padding: 6px 18px;
+    border-radius: 8px;
+    margin-right: 18px;
+    font-size: 1.1em;
+    box-shadow: 0 1px 8px #b3e6fc;
+    transition: opacity 1s;
+    opacity: 1;
+    display: inline-block;
+}
+
+.logo-recytmos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: 18px;
+}
+.logo-recytmos img {
+    height: 90px;
+    width: auto;
+    filter: drop-shadow(0 2px 8px #b3e6fc);
+}
+.logo-recytmos-barra {
+    display: flex;
+    align-items: center;
+    margin-right: 18px;
+}
+.logo-recytmos-barra img {
+    height: 38px;
+    width: auto;
+    filter: drop-shadow(0 1px 4px #b3e6fc);
+}
+#login-container {
+    margin-top: 0;
 } 

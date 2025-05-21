@@ -3,6 +3,10 @@ const API_URL = 'http://127.0.0.1:5000/api';
 let datosCuriosos = [];
 let ranking = [];
 let indiceDato = 0;
+let noticias = [];
+let indiceSlide = 0;
+let slideInterval;
+let inactivityTimer;
 
 // Mensajes de concientización
 const mensajesConciencia = [
@@ -23,15 +27,58 @@ const mainStudent = document.getElementById('main-student');
 const loginError = document.getElementById('login-error');
 
 let bonus = 0.0;
-let materias = [
-    'Matemáticas', 'Ciencias', 'Lengua', 'Historia', 'Arte', 'Educación Física', 'Tecnología', 'Inglés'
-];
 let bonificaciones = [
     // Ejemplo inicial
     { estudiante: '1001', materia: 'Matemáticas', bonificacion: 0.5, fecha: '2025-06-01 10:30' },
     { estudiante: '1002', materia: 'Ciencias', bonificacion: 0.3, fecha: '2025-06-01 11:00' }
 ];
 let documentoEstudiante = null;
+
+// --- NUEVA LÓGICA BARRA SUPERIOR ESTUDIANTE ---
+let logroInterval = null;
+
+function mostrarBarraEstudiante(documento) {
+    // Mostrar solo el texto Estudiante y el documento
+    const docSpan = document.getElementById('student-doc');
+    if (docSpan) docSpan.innerHTML = `<span>Estudiante:</span> <b>${documento}</b>`;
+    // Consultar logros SOLO de ese estudiante
+    fetch(`${API_URL}/logros_estudiante/${documento}`)
+        .then(res => res.json())
+        .then(logros => {
+            if (logros.length > 0) {
+                const logro = logros[0]; // El más reciente
+                mostrarLogroAnimado(logro.descripcion);
+            } else {
+                ocultarLogroAnimado();
+            }
+        })
+        .catch(() => ocultarLogroAnimado());
+}
+
+function mostrarLogroAnimado(descripcion) {
+    const logroSpan = document.getElementById('student-achievement');
+    if (!logroSpan) return;
+    logroSpan.textContent = descripcion;
+    logroSpan.style.display = 'inline-block';
+    logroSpan.style.opacity = '1';
+    if (logroInterval) clearInterval(logroInterval);
+    logroInterval = setInterval(() => {
+        logroSpan.style.transition = 'opacity 1s';
+        logroSpan.style.opacity = '0';
+        setTimeout(() => {
+            logroSpan.style.opacity = '1';
+        }, 1000);
+    }, 5000);
+}
+function ocultarLogroAnimado() {
+    const logroSpan = document.getElementById('student-achievement');
+    if (logroSpan) {
+        logroSpan.style.display = 'none';
+        logroSpan.textContent = '';
+    }
+    if (logroInterval) clearInterval(logroInterval);
+    logroInterval = null;
+}
 
 if (loginForm) {
     loginForm.onsubmit = async function(e) {
@@ -61,8 +108,7 @@ if (loginForm) {
                 cargarMaterias();
                 actualizarBonus();
                 documentoEstudiante = documento;
-                // Mostrar nombre del estudiante
-                document.getElementById('student-name').textContent = `Estudiante: ${documento}`;
+                mostrarBarraEstudiante(documento);
             } else {
                 loginError.textContent = data.message || 'Documento o contraseña incorrectos';
             }
@@ -77,15 +123,21 @@ function actualizarBonus() {
     document.getElementById('bonus-counter').textContent = bonus.toFixed(1);
 }
 
-function cargarMaterias() {
+async function cargarMaterias() {
     const lista = document.getElementById('materias-list');
     lista.innerHTML = '';
+    try {
+        const res = await fetch(`${API_URL}/materias`);
+        const materias = await res.json();
     materias.forEach(m => {
         const li = document.createElement('li');
-        li.textContent = m;
-        li.onclick = () => aplicarBonificacion(m, li);
+            li.textContent = m.nombre;
+            li.onclick = () => aplicarBonificacion(m.nombre, li);
         lista.appendChild(li);
     });
+    } catch {
+        lista.innerHTML = '<li>Error al cargar materias</li>';
+    }
 }
 
 // Menú lateral
@@ -113,15 +165,26 @@ residueCards.forEach(card => {
     card.onclick = () => depositarResiduo(card);
 });
 
-function mensajeConcientizacionAleatorio() {
-    const idx = Math.floor(Math.random() * mensajesConciencia.length);
-    return mensajesConciencia[idx];
+function mensajeConcientizacionAleatorio(tipo) {
+    if (tipo === 'RECICLABLES') {
+        return "¡Recuerda separar plásticos, vidrios, metales, papel y cartón!";
+    } else if (tipo === 'ORGANICOS') {
+        return "Los restos de comida y desechos agrícolas van aquí. ¡Haz compost!";
+    } else if (tipo === 'NOAPROVECHABLES') {
+        return "Servilletas, papel higiénico y residuos contaminados van aquí. ¡Reduce su uso!";
+    }
+    return "¡Gracias por cuidar el medio ambiente!";
 }
 
 function depositarResiduo(card) {
     residueCards.forEach(c => c.classList.add('disabled'));
     card.classList.add('selected');
-    mostrarOverlay(`Deposite el residuo <br><b>${card.dataset.type}</b> <div class="spinner"></div>`);
+    let tipoResiduo = card.dataset.type;
+    let nombreResiduo = '';
+    if (tipoResiduo === 'RECICLABLES') nombreResiduo = 'Aprovechables';
+    else if (tipoResiduo === 'ORGANICOS') nombreResiduo = 'Orgánicos';
+    else if (tipoResiduo === 'NOAPROVECHABLES') nombreResiduo = 'No aprovechables';
+    mostrarOverlay(`Deposite el residuo <br><b>${nombreResiduo}</b> <div class="spinner"></div>`);
     setTimeout(async () => {
         // Enviar al backend (simulado)
         if (documentoEstudiante) {
@@ -130,13 +193,13 @@ function depositarResiduo(card) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     documento: documentoEstudiante,
-                    tipo_residuo: card.dataset.type,
+                    tipo_residuo: tipoResiduo,
                     fecha: new Date().toISOString()
                 })
             });
         }
         // Mensaje de concientización
-        mostrarOverlay(`<span class="check">✔</span><div style='margin-top:12px;font-size:1em;'>${mensajeConcientizacionAleatorio()}</div>`);
+        mostrarOverlay(`<span class="check">✔</span><div style='margin-top:12px;font-size:1em;'>${mensajeConcientizacionAleatorio(tipoResiduo)}</div>`);
         bonus += 0.1;
         actualizarBonus();
         setTimeout(() => {
@@ -191,127 +254,130 @@ function aplicarBonificacion(materia, li) {
 }
 
 // --- SLIDE ---
+async function cargarNoticias() {
+    const res = await fetch(`${API_URL}/noticias`);
+    noticias = await res.json();
+}
+
 async function cargarDatosCuriosos() {
     const res = await fetch(`${API_URL}/datos_curiosos`);
     datosCuriosos = await res.json();
-    mostrarDatoCurioso();
 }
 
-async function cargarRanking() {
-    const res = await fetch(`${API_URL}/ranking`);
-    ranking = await res.json();
-    mostrarRanking();
-}
-
-function mostrarDatoCurioso() {
-    const contenedor = document.getElementById('datos-curiosos');
-    if (datosCuriosos.length > 0) {
-        contenedor.textContent = datosCuriosos[indiceDato].texto;
+function mostrarSlide() {
+    const slideContent = document.getElementById('slide-content');
+    if (noticias.length === 0 && datosCuriosos.length === 0) {
+        slideContent.textContent = 'Cargando...';
+        return;
+    }
+    const esNoticia = Math.random() < 0.5;
+    if (esNoticia && noticias.length > 0) {
+        const noticia = noticias[Math.floor(Math.random() * noticias.length)];
+        slideContent.innerHTML = `<h3>Noticia:</h3><p>${noticia.titulo}: ${noticia.contenido}</p>`;
+    } else if (datosCuriosos.length > 0) {
+        const dato = datosCuriosos[Math.floor(Math.random() * datosCuriosos.length)];
+        slideContent.innerHTML = `<h3>Dato Curioso:</h3><p>${dato.texto}</p>`;
     } else {
-        contenedor.textContent = 'Cargando...';
+        slideContent.textContent = 'No hay contenido disponible.';
     }
 }
 
-function mostrarRanking() {
-    const contenedor = document.getElementById('ranking');
-    if (ranking.length > 0) {
-        let html = '<ul>';
-        ranking.forEach((item, idx) => {
-            html += `<li>${idx + 1}. ${item.nombre} - ${item.puntos} pts</li>`;
-        });
-        html += '</ul>';
-        contenedor.innerHTML = html;
-    } else {
-        contenedor.textContent = 'Cargando...';
-    }
+function iniciarSlide() {
+    cargarNoticias();
+    cargarDatosCuriosos();
+    mostrarSlide();
+    slideInterval = setInterval(mostrarSlide, 5000);
 }
 
-function siguienteDato() {
-    if (datosCuriosos.length > 0) {
-        indiceDato = (indiceDato + 1) % datosCuriosos.length;
-        mostrarDatoCurioso();
-    }
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+        // Solo mostrar el slide si el login está visible y no hay sesión activa
+        const loginVisible = loginContainer && (loginContainer.style.display === '' || loginContainer.style.display === 'flex' || loginContainer.style.display === 'block');
+        const mainStudentVisible = mainStudent && mainStudent.style.display === 'flex';
+        const mainAdminVisible = document.getElementById('main-admin') && document.getElementById('main-admin').style.display === 'flex';
+        if (loginVisible && !mainStudentVisible && !mainAdminVisible) {
+            slideContainer.style.display = 'flex';
+            loginContainer.style.display = 'none';
+            iniciarSlide();
+        }
+    }, 10000);
 }
 
-function anteriorDato() {
-    if (datosCuriosos.length > 0) {
-        indiceDato = (indiceDato - 1 + datosCuriosos.length) % datosCuriosos.length;
-        mostrarDatoCurioso();
-    }
-}
+// Evento para el botón de ingresar en el slide
+document.getElementById('slide-ingresar').onclick = () => {
+    document.getElementById('slide-container').style.display = 'none';
+    document.getElementById('login-container').style.display = 'flex';
+    clearInterval(slideInterval);
+};
 
-if (document.getElementById('next'))
-    document.getElementById('next').onclick = siguienteDato;
-if (document.getElementById('next-bottom'))
-    document.getElementById('next-bottom').onclick = siguienteDato;
-if (document.getElementById('prev'))
-    document.getElementById('prev').onclick = anteriorDato;
+// Reiniciar temporizador al detectar interacción
+document.addEventListener('mousemove', resetInactivityTimer);
+document.addEventListener('keydown', resetInactivityTimer);
+document.addEventListener('touchstart', resetInactivityTimer);
 
-// Cambiar automáticamente cada 5 segundos
-setInterval(siguienteDato, 5000);
+// Iniciar temporizador al cargar la página
+resetInactivityTimer();
 
-// Inicializar
-cargarDatosCuriosos();
-cargarRanking();
-
-// Cerrar sesión admin
-const logoutBtnAdmin = document.getElementById('logout-btn-admin');
-if (logoutBtnAdmin) {
-    logoutBtnAdmin.onclick = () => {
-        document.getElementById('main-admin').style.display = 'none';
-        loginContainer.style.display = 'flex';
-        document.getElementById('admin-name').textContent = '';
-        // Limpiar campos de login
-        document.getElementById('documento').value = '';
-        document.getElementById('password').value = '';
-    };
-}
-
-// --- GESTIÓN DE MATERIAS Y BONIFICACIONES (ADMIN) ---
-// Abrir modal de materias
+// --- GESTIÓN DE MATERIAS (ADMIN REAL) ---
 const btnAsignarMaterias = document.getElementById('btn-asignar-materias');
 if (btnAsignarMaterias) {
     btnAsignarMaterias.onclick = () => {
-        renderMateriasAdmin();
+        cargarMateriasAdmin();
         document.getElementById('modal-materias').style.display = 'flex';
     };
 }
-// Cerrar modal materias
 const cerrarModalMaterias = document.getElementById('cerrar-modal-materias');
 if (cerrarModalMaterias) {
     cerrarModalMaterias.onclick = () => {
         document.getElementById('modal-materias').style.display = 'none';
     };
 }
-// Renderizar lista de materias en admin
-function renderMateriasAdmin() {
+
+async function cargarMateriasAdmin() {
     const ul = document.getElementById('lista-materias-admin');
+    ul.innerHTML = '<li>Cargando...</li>';
+    try {
+        const res = await fetch(`${API_URL}/materias`);
+        const materias = await res.json();
     ul.innerHTML = '';
-    materias.forEach((m, idx) => {
+        materias.forEach(m => {
         const li = document.createElement('li');
-        li.textContent = m;
+            li.textContent = m.nombre;
         const btnDel = document.createElement('button');
         btnDel.textContent = 'Eliminar';
-        btnDel.onclick = () => {
-            materias.splice(idx, 1);
-            renderMateriasAdmin();
-            cargarMaterias(); // Actualiza menú estudiante
+            btnDel.onclick = async () => {
+                if (confirm('¿Eliminar materia?')) {
+                    await fetch(`${API_URL}/materias/${m.id}`, { method: 'DELETE' });
+                    cargarMateriasAdmin();
+                }
         };
         li.appendChild(btnDel);
         ul.appendChild(li);
     });
+    } catch (e) {
+        ul.innerHTML = '<li>Error al cargar materias</li>';
+    }
 }
-// Agregar materia
+
 const btnAgregarMateria = document.getElementById('agregar-materia');
 if (btnAgregarMateria) {
-    btnAgregarMateria.onclick = () => {
+    btnAgregarMateria.onclick = async () => {
         const input = document.getElementById('nueva-materia');
         const val = input.value.trim();
-        if (val && !materias.includes(val)) {
-            materias.push(val);
+        if (val) {
+            const res = await fetch(`${API_URL}/materias`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre: val })
+            });
+            const data = await res.json();
+            if (data.success) {
             input.value = '';
-            renderMateriasAdmin();
-            cargarMaterias(); // Actualiza menú estudiante
+                cargarMateriasAdmin();
+            } else {
+                alert(data.message || 'Error al agregar materia');
+            }
         }
     };
 }
@@ -460,12 +526,183 @@ if (logoutBtn) {
     logoutBtn.onclick = () => {
         mainStudent.style.display = 'none';
         loginContainer.style.display = 'flex';
-        document.getElementById('student-name').textContent = '';
         document.getElementById('bonus-counter').textContent = '0.0';
         bonus = 0.0;
         documentoEstudiante = null;
-        // Limpiar campos de login
         document.getElementById('documento').value = '';
         document.getElementById('password').value = '';
+        loginError.textContent = '';
+        // Limpiar barra superior
+        const docSpan = document.getElementById('student-doc');
+        if (docSpan) docSpan.textContent = '';
+        ocultarLogroAnimado();
     };
-} 
+}
+
+const logoutBtnAdmin = document.getElementById('logout-btn-admin');
+if (logoutBtnAdmin) {
+    logoutBtnAdmin.onclick = () => {
+        document.getElementById('main-admin').style.display = 'none';
+        loginContainer.style.display = 'flex';
+        document.getElementById('admin-name').textContent = '';
+        document.getElementById('documento').value = '';
+        document.getElementById('password').value = '';
+        // Limpiar barra superior por si acaso
+        const docSpan = document.getElementById('student-doc');
+        if (docSpan) docSpan.textContent = '';
+        ocultarLogroAnimado();
+    };
+}
+
+// --- REGISTRO Y OLVIDÉ CONTRASEÑA ---
+const registroLink = document.getElementById('registro-link');
+const olvideLink = document.getElementById('olvide-link');
+const modalRegistro = document.getElementById('modal-registro');
+const modalOlvide = document.getElementById('modal-olvide');
+const cerrarModalRegistro = document.getElementById('cerrar-modal-registro');
+const cerrarModalOlvide = document.getElementById('cerrar-modal-olvide');
+
+if (registroLink) registroLink.onclick = () => { modalRegistro.style.display = 'flex'; };
+if (olvideLink) olvideLink.onclick = () => { modalOlvide.style.display = 'flex'; };
+if (cerrarModalRegistro) cerrarModalRegistro.onclick = () => { modalRegistro.style.display = 'none'; document.getElementById('registro-error').textContent = ''; };
+if (cerrarModalOlvide) cerrarModalOlvide.onclick = () => { modalOlvide.style.display = 'none'; document.getElementById('olvide-error').textContent = ''; document.getElementById('olvide-nueva-pass').textContent = ''; };
+
+// Registro de usuario
+const formRegistro = document.getElementById('form-registro');
+if (formRegistro) {
+  formRegistro.onsubmit = async function(e) {
+    e.preventDefault();
+    const documento = document.getElementById('registro-documento').value;
+    const password = document.getElementById('registro-password').value;
+    const errorDiv = document.getElementById('registro-error');
+    errorDiv.textContent = '';
+    try {
+      const res = await fetch(`${API_URL}/registrar_usuario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ documento, password })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        modalRegistro.style.display = 'none';
+        alert('Usuario registrado correctamente. Ahora puedes iniciar sesión.');
+        formRegistro.reset();
+      } else {
+        errorDiv.textContent = data.message || 'Error al registrar usuario';
+      }
+    } catch (err) {
+      errorDiv.textContent = 'Error de conexión con el servidor';
+    }
+  }
+}
+
+// Recuperar contraseña
+const formOlvide = document.getElementById('form-olvide');
+if (formOlvide) {
+  formOlvide.onsubmit = async function(e) {
+    e.preventDefault();
+    const documento = document.getElementById('olvide-documento').value;
+    const errorDiv = document.getElementById('olvide-error');
+    const nuevaPassDiv = document.getElementById('olvide-nueva-pass');
+    errorDiv.textContent = '';
+    nuevaPassDiv.textContent = '';
+    try {
+      const res = await fetch(`${API_URL}/recuperar_password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ documento })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        nuevaPassDiv.textContent = `Tu nueva contraseña es: ${data.nueva_password}`;
+      } else {
+        errorDiv.textContent = data.message || 'No se pudo recuperar la contraseña';
+      }
+    } catch (err) {
+      errorDiv.textContent = 'Error de conexión con el servidor';
+    }
+  }
+}
+
+// --- GESTIÓN DE DATOS CURIOSOS ---
+const btnGestionDatosCuriosos = document.getElementById('btn-gestion-datos-curiosos');
+if (btnGestionDatosCuriosos) btnGestionDatosCuriosos.onclick = () => { cargarDatosCuriososAdmin(); document.getElementById('modal-datos-curiosos').style.display = 'flex'; };
+document.getElementById('cerrar-modal-datos-curiosos').onclick = () => { document.getElementById('modal-datos-curiosos').style.display = 'none'; };
+async function cargarDatosCuriososAdmin() {
+  const ul = document.getElementById('lista-datos-curiosos');
+  ul.innerHTML = '<li>Cargando...</li>';
+  try {
+    const res = await fetch(`${API_URL}/datos_curiosos_db`);
+    const datos = await res.json();
+    ul.innerHTML = '';
+    datos.forEach(d => {
+      const li = document.createElement('li');
+      li.textContent = d.texto;
+      const btnDel = document.createElement('button');
+      btnDel.textContent = 'Eliminar';
+      btnDel.onclick = async () => { await fetch(`${API_URL}/datos_curiosos_db/${d.id}`, { method: 'DELETE' }); cargarDatosCuriososAdmin(); };
+      li.appendChild(btnDel);
+      ul.appendChild(li);
+    });
+  } catch { ul.innerHTML = '<li>Error al cargar</li>'; }
+}
+document.getElementById('agregar-dato-curioso').onclick = async () => {
+  const input = document.getElementById('nuevo-dato-curioso');
+  const val = input.value.trim();
+  if (val) {
+    const res = await fetch(`${API_URL}/datos_curiosos_db`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto: val }) });
+    const data = await res.json();
+    if (data.success) { input.value = ''; cargarDatosCuriososAdmin(); } else { alert(data.message || 'Error'); }
+  }
+};
+// --- GESTIÓN DE LOGROS ---
+const btnGestionLogros = document.getElementById('btn-gestion-logros');
+if (btnGestionLogros) btnGestionLogros.onclick = () => { cargarLogrosAdmin(); document.getElementById('modal-logros-admin').style.display = 'flex'; };
+document.getElementById('cerrar-modal-logros-admin').onclick = () => { document.getElementById('modal-logros-admin').style.display = 'none'; };
+async function cargarLogrosAdmin() {
+  const ul = document.getElementById('lista-logros-admin');
+  ul.innerHTML = '<li>Cargando...</li>';
+  try {
+    const res = await fetch(`${API_URL}/logros`);
+    const logros = await res.json();
+    ul.innerHTML = '';
+    logros.forEach(l => {
+      const li = document.createElement('li');
+      li.textContent = `${l.estudiante_documento}: ${l.descripcion} ${l.medalla || ''}`;
+      const btnDel = document.createElement('button');
+      btnDel.textContent = 'Eliminar';
+      btnDel.onclick = async () => { await fetch(`${API_URL}/logros/${l.id}`, { method: 'DELETE' }); cargarLogrosAdmin(); };
+      li.appendChild(btnDel);
+      ul.appendChild(li);
+    });
+  } catch { ul.innerHTML = '<li>Error al cargar</li>'; }
+}
+
+// Evento para agregar logro desde el modal de admin
+document.getElementById('agregar-logro').onclick = async () => {
+    const estudiante = document.getElementById('logro-estudiante').value.trim();
+    const descripcion = document.getElementById('logro-desc').value.trim();
+    const medalla = document.getElementById('logro-medalla').value.trim();
+    if (!estudiante || !descripcion) {
+        alert('Debes ingresar el documento del estudiante y la descripción.');
+        return;
+    }
+    const res = await fetch(`${API_URL}/logros`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            estudiante_documento: estudiante,
+            descripcion: descripcion,
+            medalla: medalla
+        })
+    });
+    const data = await res.json();
+    if (data.success) {
+        document.getElementById('logro-estudiante').value = '';
+        document.getElementById('logro-desc').value = '';
+        document.getElementById('logro-medalla').value = '';
+        cargarLogrosAdmin();
+    } else {
+        alert(data.message || 'Error al agregar logro');
+    }
+};

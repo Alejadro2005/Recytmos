@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salvapantallas Ambiental</title>
+    <title>Recytmos</title>
+    <link rel="icon" type="image/png" href="logo-recytmos.png">
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Logo en la pantalla de login -->
+    <div class="logo-recytmos" id="logo-login">
+        <img src="logo-recytmos.png" alt="Logo Recytmos">
+    </div>
+    <!-- Contenedor del slide -->
+    <div id="slide-container" class="slide-container" style="display:none;">
+        <h2>Noticias y Datos Curiosos</h2>
+        <div id="slide-content"></div>
+        <button id="slide-ingresar">Ingresar</button>
+    </div>
+
+    <!-- Login container -->
     <div id="login-container" class="login-container">
         <form id="login-form">
             <h2>Iniciar sesión</h2>
@@ -24,9 +38,11 @@
     <!-- Pantalla principal estudiante -->
     <div class="main-student" id="main-student" style="display:none;">
         <div class="top-bar">
+            <span class="logo-recytmos-barra"><img src="logo-recytmos.png" alt="Logo Recytmos" height="38"></span>
             <span class="menu-icon" id="menu-icon">&#9776;</span>
-            <span class="main-title">Datos-News-Mensaje al estudiante</span>
-            <span class="student-name" id="student-name"></span>
+            <span class="student-doc" id="student-doc"></span>
+            <span class="student-achievement" id="student-achievement" style="display:none;"></span>
+            <span style="flex:1;"></span>
             <span class="bonus-counter" id="bonus-counter">0.0</span>
             <span class="user-icon"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="user" width="28"></span>
         </div>
@@ -35,25 +51,63 @@
                 ¡Bienvenido! Selecciona el residuo que vas a depositar.
             </div>
             <div class="residues-row">
-                <div class="residue-card paper" data-type="PAPER">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="PAPER">
-                    <span>PAPER</span>
+                <div class="residue-card reciclables" data-type="RECICLABLES">
+                    <svg width="60" height="100" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:6px;">
+                        <!-- Tapa de la botella -->
+                        <ellipse cx="30" cy="8" rx="5" ry="3" fill="#ffffff" stroke="#111" stroke-width="2"/>
+                        <rect x="25" y="4" width="10" height="6" rx="2" fill="#ffffff" stroke="#111" stroke-width="2"/>
+
+                        <!-- Cuello -->
+                        <rect x="26" y="10" width="8" height="10" rx="2" fill="#ffffff" stroke="#111" stroke-width="2"/>
+
+                        <!-- Hombros curvados y cuerpo con base redonda -->
+                        <path d="M26 20 
+                                 Q20 25, 20 30 
+                                 L20 70 
+                                 Q20 90, 30 90 
+                                 Q40 90, 40 70 
+                                 L40 30 
+                                 Q40 25, 34 20 
+                                 Z" 
+                              fill="#ffffff" stroke="#111" stroke-width="2"/>
+
+                        <!-- Líneas decorativas -->
+                        <line x1="22" y1="40" x2="38" y2="40" stroke="#111" stroke-width="2"/>
+                        <line x1="22" y1="55" x2="38" y2="55" stroke="#111" stroke-width="2"/>
+                    </svg>
+                    <span class="residue-title">APROVECHABLES</span>
                 </div>
-                <div class="residue-card plastic" data-type="PLASTIC">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046858.png" alt="PLASTIC">
-                    <span>PLASTIC</span>
+                <div class="residue-card organicos" data-type="ORGÁNICOS">
+                    <svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:6px; display: block;">
+                        <!-- Cuerpo de la manzana grande y estilizada -->
+                        <path d="M30 32
+                                 Q10 28, 10 50
+                                 Q10 75, 30 72
+                                 Q50 75, 50 50
+                                 Q50 28, 30 32
+                                 Z"
+                              fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <!-- Tallo más largo -->
+                        <rect x="27" y="14" width="6" height="18" rx="2" fill="#111"/>
+                        <!-- Hoja más grande -->
+                        <path d="M33 14 Q45 2, 47 22 Q39 20, 33 14 Z" fill="#98fb98" stroke="#111" stroke-width="2"/>
+                    </svg>
+                    <span class="residue-title">ORGÁNICOS</span>
                 </div>
-                <div class="residue-card organic" data-type="ORGANIC">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046861.png" alt="ORGANIC">
-                    <span>ORGANIC</span>
-                </div>
-                <div class="residue-card glass" data-type="GLASS">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046859.png" alt="GLASS">
-                    <span>GLASS</span>
-                </div>
-                <div class="residue-card metal" data-type="METAL">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046860.png" alt="METAL">
-                    <span>METAL</span>
+                <div class="residue-card noaprovechables" data-type="NOAPROVECHABLES">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:6px; display: block;">
+                        <!-- Recipiente de comida grande -->
+                        <rect x="8" y="38" width="32" height="24" rx="4" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <rect x="8" y="38" width="32" height="12" rx="4" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <path d="M8 50 Q20 46, 24 54 Q28 46, 40 50 Q36 66, 16 66 Q8 60, 8 50 Z" fill="#e53935" stroke="#e53935" stroke-width="1.5"/>
+                        <rect x="16" y="46" width="16" height="3" rx="1.5" fill="#111"/>
+                        <!-- Vaso desechable grande -->
+                        <rect x="48" y="18" width="24" height="40" rx="5" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <ellipse cx="60" cy="18" rx="12" ry="3.5" fill="#fff" stroke="#111" stroke-width="2.5"/>
+                        <path d="M52 18 Q56 32, 60 28 Q64 24, 72 32 Q68 36, 60 28 Q56 24, 52 18 Z" fill="#2196f3" stroke="#2196f3" stroke-width="1.5"/>
+                        <circle cx="60" cy="40" r="8" fill="none" stroke="#111" stroke-width="2.5"/>
+                    </svg>
+                    <span class="residue-title">NO APROVECHABLES</span>
                 </div>
             </div>
             <!-- Botón de cerrar sesión -->
@@ -79,23 +133,38 @@
 
     <!-- Pantalla principal admin -->
     <div class="main-admin" id="main-admin" style="display:none;">
-        <div class="top-bar">
+        <div class="top-bar-admin">
+            <span class="logo-recytmos-barra"><img src="logo-recytmos.png" alt="Logo Recytmos" height="38"></span>
             <span class="main-title">Panel de Administración</span>
-            <span class="admin-name" id="admin-name"></span>
-            <span class="user-icon"><img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="admin" width="28"></span>
+            <span class="admin-info">
+                <img src="https://cdn-icons-png.flaticon.com/512/747/747376.png" alt="admin" width="32">
+                <span id="admin-name" class="admin-name"></span>
+            </span>
         </div>
-        <div class="main-content-admin">
-            <div class="admin-btn-row">
-                <button class="admin-btn" id="btn-asignar-materias">Asignación de materias <span class="badge">5</span></button>
-                <button class="admin-btn" id="btn-informes">Generar informes <span class="badge">3</span></button>
-                <button class="admin-btn" id="btn-info-ambiental">Información ambiental <span class="badge">2</span></button>
-                <button class="admin-btn" id="btn-logros">Logros de estudiantes <span class="badge">7</span></button>
-                <button class="admin-btn" id="btn-noticias">Noticias y datos curiosos <span class="badge">1</span></button>
-                <button class="admin-btn" id="btn-top">Top estudiantes recicladores <span class="badge">10</span></button>
-                <button class="admin-btn" id="btn-reportes">Administración de reportes <span class="badge">2</span></button>
+        <div class="admin-panel-card">
+            <div class="admin-section">
+                <h4>Gestión académica</h4>
+                <button class="admin-btn" id="btn-asignar-materias">📚 Asignación de materias</button>
+                <button class="admin-btn" id="btn-informes">📄 Generar informes</button>
             </div>
-            <button class="logout-btn" id="logout-btn-admin">Cerrar sesión</button>
+            <div class="admin-section">
+                <h4>Gestión ambiental</h4>
+                <!-- <button class="admin-btn" id="btn-info-ambiental">🌱 Información ambiental</button> -->
+                <button class="admin-btn" id="btn-logros">🏅 Logros de estudiantes</button>
+                <button class="admin-btn" id="btn-top">🏆 Top recicladores</button>
+            </div>
+            <div class="admin-section">
+                <h4>Noticias y reportes</h4>
+                <button class="admin-btn" id="btn-noticias">📰 Noticias y datos curiosos</button>
+                <button class="admin-btn" id="btn-reportes">📋 Administración de reportes</button>
+            </div>
+            <div class="admin-section">
+                <h4>Gestión avanzada</h4>
+                <button class="admin-btn" id="btn-gestion-datos-curiosos">💡 Datos curiosos</button>
+                <button class="admin-btn" id="btn-gestion-logros">🎖️ Logros</button>
+            </div>
         </div>
+        <button class="logout-btn" id="logout-btn-admin">Cerrar sesión</button>
     </div>
 
     <!-- Modal gestión de materias -->
@@ -209,6 +278,82 @@
             </table>
             <button id="descargar-reporte-ejemplo">Descargar reporte</button>
             <button id="volver-reportes">Volver</button>
+        </div>
+    </div>
+
+    <!-- Modal Registro de Usuario -->
+    <div id="modal-registro" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Registro de Usuario</h3>
+            <form id="form-registro">
+                <input type="text" id="registro-documento" placeholder="Documento de identidad" required>
+                <input type="password" id="registro-password" placeholder="Contraseña" required>
+                <button type="submit">Registrar</button>
+                <div id="registro-error" class="login-error"></div>
+            </form>
+            <button id="cerrar-modal-registro">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal Olvidé Contraseña -->
+    <div id="modal-olvide" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Recuperar Contraseña</h3>
+            <form id="form-olvide">
+                <input type="text" id="olvide-documento" placeholder="Documento de identidad" required>
+                <button type="submit">Recuperar</button>
+                <div id="olvide-error" class="login-error"></div>
+                <div id="olvide-nueva-pass" style="color:#222; font-weight:bold; margin-top:10px;"></div>
+            </form>
+            <button id="cerrar-modal-olvide">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal gestión de datos curiosos -->
+    <div id="modal-datos-curiosos" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Gestión de Datos Curiosos</h3>
+            <ul id="lista-datos-curiosos"></ul>
+            <input type="text" id="nuevo-dato-curioso" placeholder="Nuevo dato curioso">
+            <button id="agregar-dato-curioso">Agregar dato curioso</button>
+            <button id="cerrar-modal-datos-curiosos">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal gestión de logros -->
+    <div id="modal-logros-admin" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Gestión de Logros</h3>
+            <ul id="lista-logros-admin"></ul>
+            <input type="text" id="logro-estudiante" placeholder="Documento estudiante">
+            <input type="text" id="logro-desc" placeholder="Descripción">
+            <input type="text" id="logro-medalla" placeholder="Medalla (opcional)">
+            <button id="agregar-logro">Agregar logro</button>
+            <button id="cerrar-modal-logros-admin">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal gestión de noticias -->
+    <div id="modal-noticias-admin" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Gestión de Noticias</h3>
+            <ul id="lista-noticias-admin"></ul>
+            <input type="text" id="noticia-titulo" placeholder="Título">
+            <input type="text" id="noticia-contenido" placeholder="Contenido">
+            <button id="agregar-noticia">Agregar noticia</button>
+            <button id="cerrar-modal-noticias-admin">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal gestión de reportes -->
+    <div id="modal-reportes-admin" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Gestión de Reportes</h3>
+            <ul id="lista-reportes-admin"></ul>
+            <input type="text" id="reporte-tipo" placeholder="Tipo de reporte">
+            <input type="text" id="reporte-responsable" placeholder="Responsable">
+            <button id="agregar-reporte">Agregar reporte</button>
+            <button id="cerrar-modal-reportes-admin">Cerrar</button>
         </div>
     </div>
 

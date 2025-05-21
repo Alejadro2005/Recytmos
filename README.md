@@ -1,151 +1,144 @@
-# EcoEdu - Plataforma de Gestión Ambiental Educativa
+# Recytmos
 
-## Descripción
-EcoEdu es una plataforma digital educativa y gamificada diseñada para gestionar y motivar el reciclaje y compostaje en instituciones educativas. La plataforma combina tecnología, educación ambiental y gamificación para crear un impacto ambiental positivo mientras involucra a los estudiantes en prácticas sostenibles.
+Recytmos es una aplicación web que permite gestionar y visualizar datos de manera eficiente. El proyecto está estructurado en una arquitectura cliente-servidor con un backend en Flask y un frontend moderno.
+
+## Estructura del Proyecto
+
+```
+Recytmos/
+├── backend/         # Servidor Flask
+├── frontend/        # Interfaz de usuario
+├── data/           # Datos y recursos
+├── .venv/          # Entorno virtual de Python
+└── requirements.txt # Dependencias del proyecto
+```
+
+## Requisitos Técnicos
+
+### Requisitos del Sistema
+- Python 3.8 o superior
+- Node.js 16.x o superior
+- npm 8.x o superior
+- Git
+- 4GB RAM mínimo
+- 1GB de espacio en disco
+- Conexión a internet para dependencias
+
+### Lenguajes de Programación
+- **Backend**: Python 3.8+
+- **Frontend**: JavaScript/TypeScript
+- **HTML5/CSS3** para la interfaz de usuario
+
+### Base de Datos
+- SQLite (desarrollo)
+- PostgreSQL (producción)
+- ORM: SQLAlchemy
+
+### Frameworks y Bibliotecas Principales
+
+#### Backend
+- Flask 2.3.2 (Framework web)
+- Flask-CORS 3.0.10 (Manejo de CORS)
+- Flask-SQLAlchemy 3.0.5 (ORM)
+- SQLAlchemy (ORM para base de datos)
+- Python-dotenv (Manejo de variables de entorno)
+- JWT (Autenticación)
+
+#### Frontend
+- React.js (Framework de UI)
+- Material-UI (Componentes de interfaz)
+- Axios (Cliente HTTP)
+- Redux (Gestión de estado)
+- React Router (Enrutamiento)
+- Chart.js (Visualización de datos)
+
+## Instalación
+
+1. Clonar el repositorio:
+```bash
+git clone https://github.com/Alejadro2005/Recytmos.git
+cd Recytmos
+```
+
+2. Configurar el entorno virtual:
+```bash
+python -m venv .venv
+source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+3. Configurar la base de datos:
+```bash
+# Para desarrollo (SQLite)
+flask db init
+flask db migrate
+flask db upgrade
+
+# Para producción (PostgreSQL)
+# Configurar variables de entorno y ejecutar migraciones
+```
+
+4. Iniciar la aplicación:
+- En Windows: Ejecutar `iniciar_app.bat`
+- Manualmente:
+  ```bash
+  # Terminal 1 (Backend)
+  cd backend
+  python app.py
+
+  # Terminal 2 (Frontend)
+  cd frontend
+  npm install
+  npm start
+  ```
+
+## Tecnologías Utilizadas
+
+### Backend
+- Flask 2.3.2
+- Flask-CORS 3.0.10
+- Flask-SQLAlchemy 3.0.5
+- SQLAlchemy
+- Python-dotenv
+- JWT
+
+### Frontend
+- React.js
+- Material-UI
+- Axios
+- Redux
+- React Router
+- Chart.js
+
+### Base de Datos
+- SQLite (desarrollo)
+- PostgreSQL (producción)
 
 ## Características Principales
 
-### Para Instituciones Educativas
-- Reducción de residuos
-- Informes digitales de impacto ambiental
-- Certificaciones de "Colegio Verde"
-- Gestión eficiente de residuos (reciclaje y compostaje)
-- Generación de datos verificables para metas de sostenibilidad
+- Interfaz de usuario moderna y responsiva
+- API RESTful para gestión de datos
+- Sistema de autenticación JWT
+- Visualización de datos en tiempo real
+- Gestión de sesiones de usuario
+- Sistema de roles y permisos
+- Exportación de datos en múltiples formatos
+- Dashboard interactivo
+- Búsqueda avanzada y filtros
+- Sistema de notificaciones en tiempo real
 
-### Para Estudiantes
-- Sistema de gamificación con bonificaciones
-- Foros comunitarios para compartir logros
-- Tips de reciclaje
-- Recompensas tangibles
+## Contribución
 
-## Segmentos de Clientes
-- Instituciones educativas
-- Estudiantes (Usuarios Activos)
-- Empresas locales
-- ONGs ambientales
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
-## Canales de Distribución
-- Redes sociales
-- Ferias estudiantiles
-- Convenios
-- Colaboraciones con organizaciones ambientales (ONG)
+## Licencia
 
-## Modelo de Negocio
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-### Fuentes de Ingresos
-- Suscripciones anuales
-- Publicidad
-- Medios digitales
+## Contacto
 
-### Estructura de Costos
-- Desarrollo tecnológico (app + servidores)
-- Marketing
-- Recursos Humanos
-- Soporte técnico
-
-## Recursos Clave
-- Tecnológicos: plataformas, servidores
-- Humanos: Equipo de desarrollo, aliados comerciales
-- Alianzas: Convenios
-
-## Actividades Clave
-- Campañas educativas
-- Talleres ambientales
-- Capacitaciones
-- Ferias estudiantiles
-
-## Socios Clave
-- Instituciones educativas
-- Empresas de reciclaje
-- Gobiernos
-- Proveedores de servicios en la nube
-
-## Relaciones con Clientes
-- Soporte técnico
-- Programa de fidelización
-- Comunidad activa
-- Foros en la app
-
-## Requisitos Técnicos
-- Servidor en la nube
-- Plataforma web/móvil
-- Base de datos para seguimiento de métricas
-- Sistema de autenticación
-
-## Instalación y Configuración
-
-### Requisitos Previos
-- Node.js (versión 18 o superior)
-- npm (incluido con Node.js)
-- Python 3.8 o superior
-- Git
-
-### Backend
-```bash
-# Clonar el repositorio (si aún no lo has hecho)
-git clone [URL_DEL_REPOSITORIO]
-
-# Entrar al directorio del backend
-cd backend
-
-# Crear y activar entorno virtual (recomendado)
-python -m venv venv
-# En Windows:
-venv\Scripts\activate
-# En Linux/Mac:
-source venv/bin/activate
-
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Configurar variables de entorno
-cp .env.example .env
-# Editar el archivo .env con tus configuraciones
-
-# Iniciar el servidor
-python app.py
-```
-
-### Frontend
-```bash
-# En una nueva terminal, desde la raíz del proyecto
-cd frontend
-
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno
-cp .env.example .env
-# Editar el archivo .env con tus configuraciones
-
-# Iniciar el servidor de desarrollo
-npm run dev
-
-# Para producción
-npm run build
-npm start
-```
-
-### Ejecutar ambos servicios (desarrollo)
-Para ejecutar tanto el frontend como el backend en modo desarrollo, necesitarás dos terminales:
-
-Terminal 1 (Backend):
-```bash
-cd backend
-# Activar entorno virtual si no está activado
-# En Windows:
-venv\Scripts\activate
-# En Linux/Mac:
-source venv/bin/activate
-
-python app.py
-```
-
-Terminal 2 (Frontend):
-```bash
-cd frontend
-npm run dev
-```
-
-El backend estará disponible en: http://localhost:5000
-El frontend estará disponible en: http://localhost:5173
+Alejandro - [@Alejadro2005](https://github.com/Alejadro2005) 
