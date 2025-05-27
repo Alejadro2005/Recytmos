@@ -79,7 +79,7 @@ with app.app_context():
     db.session.commit()
 
 # Cargar datos curiosos desde un archivo JSON
-with open('datos_curiosos.json', 'r', encoding='utf-8') as f:
+with open(os.path.join(BASE_DIR, 'datos_curiosos.json'), 'r', encoding='utf-8') as f:
     datos_curiosos = json.load(f)
 
 # Ejemplo de ranking (puedes cambiarlo por datos reales después)
