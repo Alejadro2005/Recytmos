@@ -89,6 +89,10 @@ RANKING = [
     {"nombre": "Estudiante 3", "puntos": 80}
 ]
 
+@app.route('/')
+def index():
+    return jsonify({"message": "¡Bienvenido a la API de Recytmos!"})
+
 @app.route('/api/datos_curiosos')
 def get_datos_curiosos():
     return jsonify(datos_curiosos)
