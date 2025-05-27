@@ -9,30 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Logo en la pantalla de login -->
-    <div class="logo-recytmos" id="logo-login">
-        <img src="logo-recytmos.png" alt="Logo Recytmos">
+    <!-- Login container -->
+    <div id="login-container" class="login-container">
+        <div class="logo-recytmos" style="margin-bottom: 18px;">
+            <img src="logo-recytmos.png" alt="Logo Recytmos" style="height: 60px; width: auto; display: block; margin: 0 auto;">
+        </div>
+        <form id="login-form">
+            <input type="text" id="documento" placeholder="Documento de identidad" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+            <div class="login-links">
+                <a href="#" id="registro-link">Registro</a>
+                <span class="separator">|</span>
+                <a href="#" id="olvide-link">Olvidé contraseña</a>
+            </div>
+            <div id="login-error" class="login-error"></div>
+        </form>
     </div>
+
     <!-- Contenedor del slide -->
     <div id="slide-container" class="slide-container" style="display:none;">
         <h2>Noticias y Datos Curiosos</h2>
         <div id="slide-content"></div>
         <button id="slide-ingresar">Ingresar</button>
-    </div>
-
-    <!-- Login container -->
-    <div id="login-container" class="login-container">
-        <form id="login-form">
-            <h2>Iniciar sesión</h2>
-            <input type="text" id="documento" placeholder="Documento de identidad" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <button type="submit">Ingresar</button>
-            <div class="login-links">
-                <a href="#" id="registro-link">Registro</a> /
-                <a href="#" id="olvide-link">Olvidé contraseña</a>
-            </div>
-            <div id="login-error" class="login-error"></div>
-        </form>
     </div>
 
     <!-- Pantalla principal estudiante -->
@@ -250,15 +249,19 @@
     <div id="modal-top" class="modal" style="display:none;">
         <div class="modal-content">
             <h3>Top estudiantes recicladores</h3>
-            <canvas id="grafico-top" width="320" height="180" style="margin-bottom:18px;"></canvas>
             <table style="margin-bottom:12px;">
                 <thead><tr><th>Posición</th><th>Estudiante</th><th>Kg reciclados</th></tr></thead>
                 <tbody>
-                    <tr><td>1</td><td>Ana</td><td>100</td></tr>
-                    <tr><td>2</td><td>Luis</td><td>80</td></tr>
-                    <tr><td>3</td><td>María</td><td>60</td></tr>
-                    <tr><td>4</td><td>Pedro</td><td>40</td></tr>
-                    <tr><td>5</td><td>Lucía</td><td>30</td></tr>
+                    <tr><td>1</td><td>Ana</td><td>120</td></tr>
+                    <tr><td>2</td><td>Luis</td><td>110</td></tr>
+                    <tr><td>3</td><td>María</td><td>95</td></tr>
+                    <tr><td>4</td><td>Pedro</td><td>80</td></tr>
+                    <tr><td>5</td><td>Lucía</td><td>75</td></tr>
+                    <tr><td>6</td><td>Carlos</td><td>60</td></tr>
+                    <tr><td>7</td><td>Valentina</td><td>55</td></tr>
+                    <tr><td>8</td><td>Juan</td><td>50</td></tr>
+                    <tr><td>9</td><td>Camila</td><td>45</td></tr>
+                    <tr><td>10</td><td>Mateo</td><td>40</td></tr>
                 </tbody>
             </table>
             <button id="volver-top">Volver</button>
@@ -276,7 +279,6 @@
                     <tr><td>Mensual</td><td>2025-05-31</td><td>Admin</td></tr>
                 </tbody>
             </table>
-            <button id="descargar-reporte-ejemplo">Descargar reporte</button>
             <button id="volver-reportes">Volver</button>
         </div>
     </div>

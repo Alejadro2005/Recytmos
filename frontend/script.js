@@ -403,8 +403,9 @@ function renderTablaBonificaciones() {
     const tbody = document.querySelector('#tabla-bonificaciones tbody');
     tbody.innerHTML = '';
     bonificaciones.forEach(b => {
+        const bonificacionFormateada = Number(b.bonificacion) % 1 === 0 ? Number(b.bonificacion).toFixed(0) : Number(b.bonificacion).toFixed(1);
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${b.estudiante}</td><td>${b.materia}</td><td>${b.bonificacion}</td><td>${b.fecha}</td>`;
+        tr.innerHTML = `<td>${b.estudiante}</td><td>${b.materia}</td><td>${bonificacionFormateada}</td><td>${b.fecha}</td>`;
         tbody.appendChild(tr);
     });
 }
@@ -412,17 +413,40 @@ function renderTablaBonificaciones() {
 const btnDescargarInforme = document.getElementById('descargar-informe');
 if (btnDescargarInforme) {
     btnDescargarInforme.onclick = () => {
-        let csv = 'Estudiante,Materia,Bonificación,Fecha\n';
+        // Encabezados entre comillas y separados por punto y coma
+        let csv = '"Estudiante";"Nombre de la materia";"Bonificación";"Fecha y hora"\n';
         bonificaciones.forEach(b => {
-            csv += `${b.estudiante},${b.materia},${b.bonificacion},${b.fecha}\n`;
+            const bonificacionFormateada = Number(b.bonificacion) % 1 === 0 ? Number(b.bonificacion).toFixed(0) : Number(b.bonificacion).toFixed(1);
+            let fecha = b.fecha;
+            if (fecha && fecha.includes('/')) {
+                const partes = fecha.split(/[\/, :]/);
+                if (partes.length >= 6) {
+                    const d = partes[0].padStart(2, '0');
+                    const m = partes[1].padStart(2, '0');
+                    const y = partes[2];
+                    const h = partes[3].padStart(2, '0');
+                    const min = partes[4].padStart(2, '0');
+                    const s = partes[5].padStart(2, '0');
+                    fecha = `${y}-${m}-${d} ${h}:${min}:${s}`;
+                }
+            }
+            // Cada campo entre comillas y separado por ;
+            csv += `"${b.estudiante}";"${b.materia}";"${bonificacionFormateada}";"${fecha}"\n`;
         });
-        const blob = new Blob([csv], { type: 'text/csv' });
+        csv += '\n';
+        // Agregar BOM para que Excel reconozca UTF-8
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'informe_bonificaciones.csv';
         a.click();
         URL.revokeObjectURL(url);
+        // Agregar nueva fila a la variable y re-renderizar
+        const fecha = new Date();
+        const fechaStr = fecha.getFullYear() + '-' + String(fecha.getMonth()+1).padStart(2, '0') + '-' + String(fecha.getDate()).padStart(2, '0');
+        reportes.push({ tipo: 'Bonificación', fecha: fechaStr, responsable: 'Admin' });
+        renderTablaReportes();
     };
 }
 
@@ -461,56 +485,42 @@ document.getElementById('volver-top').onclick = () => {
     document.getElementById('modal-top').style.display = 'none';
 };
 
+// --- Reportes dinámicos ---
+let reportes = [
+    { tipo: 'Semanal', fecha: '2025-06-01', responsable: 'Admin' },
+    { tipo: 'Mensual', fecha: '2025-05-31', responsable: 'Admin' }
+];
+
+function renderTablaReportes() {
+    const tbody = document.querySelector('#modal-reportes table tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    reportes.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.tipo}</td><td>${r.fecha}</td><td>${r.responsable}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
 const btnReportes = document.getElementById('btn-reportes');
-if (btnReportes) btnReportes.onclick = () => {
-    document.getElementById('modal-reportes').style.display = 'flex';
-};
+if (btnReportes) {
+    btnReportes.onclick = () => {
+        renderTablaReportes();
+        document.getElementById('modal-reportes').style.display = 'flex';
+    };
+}
+
 document.getElementById('volver-reportes').onclick = () => {
     document.getElementById('modal-reportes').style.display = 'none';
 };
 
-// --- GRÁFICOS DE EJEMPLO EN MODALES ---
-function dibujarGraficoResiduos() {
-    const canvas = document.getElementById('grafico-residuos');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    // Datos de ejemplo
-    const datos = [120, 80, 60, 150];
-    const colores = ['#c7e6ff','#ffe066','#c7ffd6','#ffe7a0'];
-    const etiquetas = ['Papel','Plástico','Vidrio','Orgánico'];
-    const max = Math.max(...datos);
-    for(let i=0;i<datos.length;i++){
-        ctx.fillStyle = colores[i];
-        ctx.fillRect(40+i*65, canvas.height-30-datos[i]/max*120, 40, datos[i]/max*120);
-        ctx.fillStyle = '#222';
-        ctx.fillText(etiquetas[i], 40+i*65, canvas.height-10);
-        ctx.fillText(datos[i]+'kg', 40+i*65, canvas.height-35-datos[i]/max*120);
-    }
-}
-function dibujarGraficoTop() {
-    const canvas = document.getElementById('grafico-top');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    // Datos de ejemplo
-    const datos = [100,80,60,40,30];
-    const nombres = ['Ana','Luis','María','Pedro','Lucía'];
-    const colores = ['#4caf50','#388e3c','#b2e6b2','#ffe066','#c7e6ff'];
-    const max = Math.max(...datos);
-    for(let i=0;i<datos.length;i++){
-        ctx.fillStyle = colores[i];
-        ctx.fillRect(40+i*50, canvas.height-30-datos[i]/max*120, 32, datos[i]/max*120);
-        ctx.fillStyle = '#222';
-        ctx.fillText(nombres[i], 40+i*50, canvas.height-10);
-        ctx.fillText(datos[i]+'kg', 40+i*50, canvas.height-35-datos[i]/max*120);
-    }
-}
-// --- DESCARGA DE REPORTE DE EJEMPLO ---
 const btnDescargarReporteEjemplo = document.getElementById('descargar-reporte-ejemplo');
 if (btnDescargarReporteEjemplo) {
     btnDescargarReporteEjemplo.onclick = () => {
-        let csv = 'Tipo,Fecha,Responsable\nSemanal,2025-06-01,Admin\nMensual,2025-05-31,Admin\n';
+        let csv = 'Tipo,Fecha,Responsable\n';
+        reportes.forEach(r => {
+            csv += `${r.tipo},${r.fecha},${r.responsable}\n`;
+        });
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
