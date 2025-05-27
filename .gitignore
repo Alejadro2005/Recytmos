@@ -33,4 +33,10 @@ yarn-error.log*
 
 # Logs
 *.log
-logs/ 
+logs/
+
+# Archivos de base de datos y datos locales
+data/ecoapp.db
+
+# Archivos de configuración locales
+.env 
