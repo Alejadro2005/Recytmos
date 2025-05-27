@@ -205,7 +205,7 @@ function depositarResiduo(card) {
         setTimeout(() => {
             ocultarOverlay();
             residueCards.forEach(c => c.classList.remove('disabled', 'selected'));
-        }, 1800);
+        }, 2500);
     }, 1500);
 }
 
